@@ -58,6 +58,42 @@ async function main() {
 
     console.log(`✅ Created ${pokemonData.length} Pokemon cards`);
 
+    const redDeck = await prisma.deck.create({
+        data: {
+            name: "Starter Deck",
+            userId: redUser.id,
+        },
+    });
+
+    const blueDeck = await prisma.deck.create({
+        data: {
+            name: "Starter Deck",
+            userId: blueUser.id,
+        },
+    });
+
+    const getRandomCards = (cards: typeof createdCards, count: number) => {
+        const shuffled = [...cards].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+    };
+
+    const redCards = getRandomCards(createdCards, 10);
+    await prisma.deckCard.createMany({
+        data: redCards.map((card) => ({
+            deckId: redDeck.id,
+            cardId: card.id,
+        })),
+    });
+
+    const blueCards = getRandomCards(createdCards, 10);
+    await prisma.deckCard.createMany({
+        data: blueCards.map((card) => ({
+            deckId: blueDeck.id,
+            cardId: card.id,
+        })),
+    });
+
+
     console.log("\n🎉 Database seeding completed!");
 }
 
