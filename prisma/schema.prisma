@@ -70,3 +70,8 @@ model DeckCard {
 
   // @@unique([deckId, cardId]) A decommenter si les doublons dans un deck sont interdits
 }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
