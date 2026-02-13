@@ -1,15 +1,23 @@
-import type {Request} from 'express';
+import type { Request } from 'express'
 
 export interface CreateDeckBody {
-    name: string;
-    cards: number[];
+  name: string
+  cards: number[]
 }
 
 export interface UpdateDeckBody {
-    name: string;
-    cards: number[];
+  name: string
+  cards: number[]
 }
 
-export type CreateDeckRequest = Request<any, any, CreateDeckBody>;
+export interface DeckParams {
+  id: string
+}
 
-export type UpdateDeckRequest = Request<any, any, UpdateDeckBody>;
+export type CreateDeckRequest = Request<unknown, unknown, CreateDeckBody>
+
+export type UpdateDeckRequest = Request<DeckParams, unknown, UpdateDeckBody>
+
+export type GetDeckRequest = Request<DeckParams, unknown, unknown>
+
+export type DeleteDeckRequest = Request<DeckParams, unknown, unknown>
