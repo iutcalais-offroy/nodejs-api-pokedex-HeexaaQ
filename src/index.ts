@@ -1,5 +1,4 @@
 import { createServer } from 'http'
-import { env } from './env'
 import express from 'express'
 import cors from 'cors'
 import authRoutes from './routes/auth.routes'
@@ -40,11 +39,10 @@ if (require.main === module) {
 
   // Start server
   try {
-    httpServer.listen(env.PORT, () => {
-      console.log(`\n🚀 Server is running on http://localhost:${env.PORT}`)
-      console.log(
-        `🧪 Socket.io Test Client available at http://localhost:${env.PORT}`,
-      )
+    const PORT = process.env.PORT || 3000
+
+    httpServer.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`)
     })
   } catch (error) {
     console.error('Failed to start server:', error)
