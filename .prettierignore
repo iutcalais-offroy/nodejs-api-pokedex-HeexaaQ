@@ -4,3 +4,4 @@ build
 coverage
 .env
 tests
+commitlint.config.js

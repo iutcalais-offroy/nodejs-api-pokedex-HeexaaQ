@@ -4,15 +4,6 @@ import { app } from '../src/index'
 import { prismaMock } from './vitest.setup'
 import bcrypt from 'bcryptjs'
 
-const mockUser = {
-  id: 1,
-  username: 'testuser',
-  email: 'test@example.com',
-  password: 'hashedpassword',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-}
-
 describe('POST /auth/sign-up', () => {
   it('should sign up a new user', async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(null)
