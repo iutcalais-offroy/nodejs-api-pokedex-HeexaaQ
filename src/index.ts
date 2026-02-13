@@ -37,12 +37,13 @@ if (require.main === module) {
   // Create HTTP server
   const httpServer = createServer(app)
 
-  // Start server
+  // Start server - bind to 0.0.0.0 to accept external connections (required for Railway)
   try {
     const PORT = process.env.PORT || 3000
+    const HOST = '0.0.0.0'
 
-    httpServer.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`)
+    httpServer.listen(Number(PORT), HOST, () => {
+      console.log(`Server running on ${HOST}:${PORT}`)
     })
   } catch (error) {
     console.error('Failed to start server:', error)
