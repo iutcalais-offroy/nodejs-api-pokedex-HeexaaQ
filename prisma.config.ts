@@ -6,13 +6,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 import { defineConfig } from 'prisma/config'
 
-// Validate DATABASE_URL in production
-if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
-  throw new Error(
-    'DATABASE_URL environment variable is not set in production. Please configure it in Railway.',
-  )
-}
-
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
