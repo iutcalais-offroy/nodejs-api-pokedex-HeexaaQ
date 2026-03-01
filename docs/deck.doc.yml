@@ -1,0 +1,245 @@
+paths:
+  /api/decks:
+    post:
+      tags:
+        - Decks
+      summary: Créer un nouveau deck
+      description: Crée un deck de 10 cartes associé à l'utilisateur connecté
+      operationId: createDeck
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nom du deck
+                cards:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: Tableau de 10 IDs de cartes
+              required:
+                - name
+                - cards
+            examples:
+              example1:
+                summary: Création deck électrique
+                value:
+                  name: 'Mon deck électrique'
+                  cards: [25, 26, 81, 82, 100, 125, 135, 145, 172, 179]
+      responses:
+        '201':
+          description: Deck créé avec succès
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'deck created successfully :Mon deck électrique'
+        '400':
+          description: Données manquantes ou nombre de cartes invalide
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: string
+                  - $ref: '#/components/schemas/Error'
+              examples:
+                missingName:
+                  summary: Nom manquant
+                  value: 'Missing deck name'
+                invalidCards:
+                  summary: Nombre de cartes invalide
+                  value: 'A deck must contain exactly 10 cards'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/decks/mine:
+    get:
+      tags:
+        - Decks
+      summary: Récupérer mes decks
+      description: Retourne la liste simplifiée (ID et nom) des decks de l'utilisateur connecté
+      operationId: getMyDecks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste des decks récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeckSummary'
+              example:
+                - id: 1
+                  name: 'Mon deck électrique'
+                - id: 2
+                  name: 'Mon deck feu'
+                - id: 3
+                  name: 'Mon deck eau'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/decks/{id}:
+    get:
+      tags:
+        - Decks
+      summary: Récupérer un deck par son ID
+      description: Retourne les détails complets d'un deck spécifique appartenant à l'utilisateur connecté
+      operationId: getDeckById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du deck à récupérer
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Deck récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deck'
+              example:
+                id: 1
+                name: 'Mon deck électrique'
+                userId: 1
+                createdAt: '2024-01-22T10:30:00Z'
+                updatedAt: '2024-01-22T10:30:00Z'
+        '400':
+          description: ID invalide
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Invalid deck ID'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - Decks
+      summary: Modifier un deck existant
+      description: Met à jour le nom et/ou les cartes d'un deck. Les anciennes cartes sont remplacées par les nouvelles
+      operationId: updateDeck
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du deck à modifier
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nouveau nom du deck
+                cards:
+                  type: array
+                  items:
+                    type: integer
+                  minItems: 10
+                  maxItems: 10
+                  description: Nouveau tableau de 10 IDs de cartes
+              required:
+                - name
+                - cards
+            examples:
+              example1:
+                summary: Modification deck électrique
+                value:
+                  name: 'Mon deck électrique modifié'
+                  cards: [25, 26, 81, 82, 100, 125, 135, 145, 172, 181]
+      responses:
+        '200':
+          description: Deck modifié avec succès
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Deck updated successfully[object Object]'
+        '400':
+          description: ID invalide, nom manquant ou nombre de cartes incorrect
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                invalidId:
+                  value: 'Invalid deck ID'
+                missingName:
+                  value: 'Missing deck name'
+                invalidCards:
+                  value: 'A deck must contain exactly 10 cards'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Decks
+      summary: Supprimer un deck
+      description: Supprime un deck et ses associations avec les cartes (suppression en cascade des entrées DeckCard)
+      operationId: deleteDeck
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du deck à supprimer
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Deck supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Deck deleted successfully'
+        '400':
+          description: ID invalide
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Invalid deck ID'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'

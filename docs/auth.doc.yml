@@ -1,0 +1,123 @@
+paths:
+  /api/auth/sign-up:
+    post:
+      tags:
+        - Authentication
+      summary: Inscription d'un nouvel utilisateur
+      description: Crée un nouveau compte utilisateur, hash le mot de passe et génère un token JWT valide 7 jours
+      operationId: signUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email unique de l'utilisateur
+                username:
+                  type: string
+                  description: Nom d'utilisateur
+                password:
+                  type: string
+                  format: password
+                  description: Mot de passe (sera hashé avec bcrypt)
+              required:
+                - email
+                - username
+                - password
+            examples:
+              example1:
+                summary: Inscription classique
+                value:
+                  email: 'blue@pokemon.com'
+                  username: 'trainer_blue'
+                  password: 'SecureP@ss123'
+      responses:
+        '201':
+          description: Compte créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYmx1ZUBwb2tlbW9uLmNvbSIsImlhdCI6MTcwNTkzMzgwMCwiZXhwIjoxNzA2NTM4NjAwfQ.abc123'
+                user:
+                  id: 1
+                  username: 'trainer_blue'
+                  email: 'blue@pokemon.com'
+                  createdAt: '2024-01-22T10:30:00Z'
+                  updatedAt: '2024-01-22T10:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '409':
+          description: Email déjà utilisé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: 'Email déjà utilisé'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/sign-in:
+    post:
+      tags:
+        - Authentication
+      summary: Connexion d'un utilisateur existant
+      description: Authentifie un utilisateur avec email et mot de passe, génère un token JWT
+      operationId: signIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email du compte
+                password:
+                  type: string
+                  format: password
+                  description: Mot de passe du compte
+              required:
+                - email
+                - password
+            examples:
+              example1:
+                summary: Connexion classique
+                value:
+                  email: 'blue@pokemon.com'
+                  password: 'SecureP@ss123'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYmx1ZUBwb2tlbW9uLmNvbSIsImlhdCI6MTcwNTkzMzgwMCwiZXhwIjoxNzA2NTM4NjAwfQ.abc123'
+                user:
+                  id: 1
+                  username: 'trainer_blue'
+                  email: 'blue@pokemon.com'
+                  createdAt: '2024-01-22T10:30:00Z'
+                  updatedAt: '2024-01-22T10:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          description: Identifiants incorrects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: 'Identifiants incorrects'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
