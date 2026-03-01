@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: Pokedex API
+  description: API REST pour gérer des cartes Pokémon, créer des decks et authentifier des utilisateurs
+  version: 1.0.0
+  contact:
+    name: Support API
+    email: support@pokedex-api.com
+
+servers:
+  - url: http://localhost:3000
+    description: Serveur local de développement
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtenu via /api/auth/sign-in ou /api/auth/sign-up
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: 'trainer_red'
+        email:
+          type: string
+          format: email
+          example: 'red@pokemon.com'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+      required:
+        - id
+        - username
+        - email
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Pikachu'
+        hp:
+          type: integer
+          example: 60
+        attack:
+          type: integer
+          example: 50
+        type:
+          type: string
+          enum:
+            - Normal
+            - Fire
+            - Water
+            - Electric
+            - Grass
+            - Ice
+            - Fighting
+            - Poison
+            - Ground
+            - Flying
+            - Psychic
+            - Bug
+            - Rock
+            - Ghost
+            - Dragon
+            - Dark
+            - Steel
+            - Fairy
+          example: 'Electric'
+        pokedexNumber:
+          type: integer
+          example: 25
+        imgUrl:
+          type: string
+          nullable: true
+          example: 'https://example.com/pikachu.png'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+      required:
+        - id
+        - name
+        - hp
+        - attack
+        - type
+        - pokedexNumber
+
+    Deck:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Mon deck électrique'
+        userId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-22T10:30:00Z'
+      required:
+        - id
+        - name
+        - userId
+
+    DeckSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'Mon deck électrique'
+      required:
+        - id
+        - name
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Message d'erreur"
+      required:
+        - error
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - token
+        - user
+
+  responses:
+    UnauthorizedError:
+      description: Token JWT manquant ou invalide
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: 'Unauthorized'
+
+    NotFoundError:
+      description: Ressource introuvable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: 'Deck not found'
+
+    BadRequestError:
+      description: Données invalides ou manquantes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: 'Données manquantes'
+
+    InternalServerError:
+      description: Erreur serveur interne
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: 'Internal server error'
+
+tags:
+  - name: Authentication
+    description: Endpoints d'inscription et de connexion
+  - name: Cards
+    description: Consultation des cartes Pokémon disponibles
+  - name: Decks
+    description: Gestion des decks de cartes (CRUD)
+
+paths: {}

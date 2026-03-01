@@ -1,0 +1,59 @@
+paths:
+  /api/cards:
+    get:
+      tags:
+        - Cards
+      summary: Récupérer toutes les cartes Pokémon
+      description: Retourne la liste complète des cartes Pokémon disponibles, triées par numéro de Pokédex
+      operationId: getAllCards
+      responses:
+        '200':
+          description: Liste des cartes récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+              examples:
+                example1:
+                  summary: Exemple avec plusieurs cartes
+                  value:
+                    - id: 1
+                      name: 'Bulbasaur'
+                      hp: 45
+                      attack: 49
+                      type: 'Grass'
+                      pokedexNumber: 1
+                      imgUrl: 'https://example.com/bulbasaur.png'
+                      createdAt: '2024-01-22T10:30:00Z'
+                      updatedAt: '2024-01-22T10:30:00Z'
+                    - id: 4
+                      name: 'Charmander'
+                      hp: 39
+                      attack: 52
+                      type: 'Fire'
+                      pokedexNumber: 4
+                      imgUrl: 'https://example.com/charmander.png'
+                      createdAt: '2024-01-22T10:30:00Z'
+                      updatedAt: '2024-01-22T10:30:00Z'
+                    - id: 7
+                      name: 'Squirtle'
+                      hp: 44
+                      attack: 48
+                      type: 'Water'
+                      pokedexNumber: 7
+                      imgUrl: 'https://example.com/squirtle.png'
+                      createdAt: '2024-01-22T10:30:00Z'
+                      updatedAt: '2024-01-22T10:30:00Z'
+                    - id: 25
+                      name: 'Pikachu'
+                      hp: 60
+                      attack: 50
+                      type: 'Electric'
+                      pokedexNumber: 25
+                      imgUrl: 'https://example.com/pikachu.png'
+                      createdAt: '2024-01-22T10:30:00Z'
+                      updatedAt: '2024-01-22T10:30:00Z'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
