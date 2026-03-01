@@ -9,8 +9,20 @@ import { SignUpRequest, SignInRequest } from '../types/auth.types'
 const router = Router()
 
 /**
- * POST /api/auth/sign-up
- * Inscription d'un nouvel utilisateur
+ * Route d'inscription - Crée un nouveau compte utilisateur
+ * Hash le mot de passe et génère un token JWT valide 7 jours
+ *
+ * @route POST /api/auth/sign-up
+ * @access Public
+ *
+ * @param {string} req.body.email - Email unique
+ * @param {string} req.body.username - Nom d'utilisateur
+ * @param {string} req.body.password - Mot de passe (sera hashé)
+ *
+ * @returns {201} { token: string, user: User } - Token et infos utilisateur
+ * @throws {400} Données manquantes
+ * @throws {409} Email déjà utilisé
+ * @throws {500} Erreur serveur
  */
 router.post('/sign-up', async (req: SignUpRequest, res: Response) => {
   try {
@@ -56,8 +68,19 @@ router.post('/sign-up', async (req: SignUpRequest, res: Response) => {
 })
 
 /**
- * POST /api/auth/sign-in
- * Connexion d'un utilisateur existant
+ * Route de connexion - Authentifie un utilisateur existant
+ * Vérifie l'email et le mot de passe puis génère un token JWT
+ *
+ * @route POST /api/auth/sign-in
+ * @access Public
+ *
+ * @param {string} req.body.email - Email du compte
+ * @param {string} req.body.password - Mot de passe
+ *
+ * @returns {200} { token: string, user: User } - Token et infos utilisateur
+ * @throws {400} Données manquantes
+ * @throws {401} Identifiants incorrects
+ * @throws {500} Erreur serveur
  */
 router.post('/sign-in', async (req: SignInRequest, res: Response) => {
   try {

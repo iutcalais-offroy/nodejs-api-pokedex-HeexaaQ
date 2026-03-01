@@ -3,6 +3,22 @@ import { Request } from 'express'
 import jwt from 'jsonwebtoken'
 import { env } from '../env'
 
+/**
+ * Middleware d'authentification JWT pour les routes protégées
+ * Vérifie le token dans le header Authorization et ajoute les infos user à req.user
+ *
+ * @param {Request} req - Requête avec header Authorization: "Bearer <token>"
+ * @param {Response} res - Réponse Express
+ * @param {NextFunction} next - Fonction pour continuer
+ *
+ * @returns {void} Appelle next() si valide
+ * @throws {401} Si token absent ou invalide
+ *
+ * @example
+ * router.get('/protected', authenticateToken, (req, res) => {
+ *   const userId = req.user.userId
+ * })
+ */
 export const authenticateToken = (
   req: Request<unknown, unknown, unknown>,
   res: Response,
