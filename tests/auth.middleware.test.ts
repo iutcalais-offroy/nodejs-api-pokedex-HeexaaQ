@@ -72,7 +72,8 @@ describe("authenticateToken", () => {
       headers: {
         authorization: "Bearer valid-token",
       },
-    } as Request;
+      user: undefined,
+    } as unknown as Request;
     const res = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn(),
@@ -84,7 +85,7 @@ describe("authenticateToken", () => {
 
     authenticateToken(req, res, next);
 
-    expect(req.user).toEqual(decoded);
+    expect((req as any).user).toEqual(decoded);
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
   });
